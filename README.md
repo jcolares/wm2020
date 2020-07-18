@@ -11,10 +11,10 @@ Código para o artigo WM 2020
 2. Usar a nova rede para gerar novas silhuetas a partir das imagens no dataset CASIA-B
     1. baixar os vídeos do CASIAB - Enviar o release agreement preenchido
 3. Preparar um modelo de reconhecimento de GEI
-    1.  Treinar e avaliar o modelo utilizando as silhuetas originais do CASIA-B
-        1.  [OK] Baixar as silhuetas originais do CASIA-B
-    2.  Treinar e avaliar o modelo utilizando as novas silhuetas segmentadas do CASIA-B
+4. Treinar e avaliar o modelo utilizando as silhuetas originais do CASIA-B
+    1. [OK] Baixar as silhuetas originais do CASIA-B
+2.  Treinar e avaliar o modelo utilizando as novas silhuetas segmentadas do CASIA-B
 4. Comparar os resultados
-5. Ligar as redes de segmentação e de reconhecimento de GEI (deixar que o bacKpropagation determine qual é a melhor representação)
-6. Comparar os resultados
+5. [opcional] Ligar as redes de segmentação e de reconhecimento de GEI (deixar que o bacKpropagation determine qual é a melhor representação)
+6. [opcional] Comparar os resultados
 
