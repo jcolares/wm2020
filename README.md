@@ -2,7 +2,7 @@
 Código para o artigo WM 2020
 
 ## Atividades
-3. Treinar uma rede para fazer segmentação humana (usar o dataset supervise.ly)
+1. Treinar uma rede para fazer segmentação humana (usar o dataset supervise.ly)
     1. [OK] Baixar o dataset supervise.ly human segmentation 
     1. [OK] Baixar um modelo de rede de segmentação 
     1. [OK] Testar e ajustar a rede até que funcione corretamente
