@@ -55,3 +55,33 @@ def json_2_bitmap(source_file, dest_file=''):
         cv2.imwrite(dest_file, mask_img)
     else:
         return(mask_img)
+
+
+def resize_320x240(fn, w=320, h=240, interpolate=0):
+    ratio = max(fn.shape)/w
+    new_h = round(fn.shape[0]/ratio)
+    new_w = round(fn.shape[1]/ratio)
+    # new_fn = cv2.resize(fn, (new_w, new_h), fx=0, fy=0,
+    #                    interpolation=cv2.INTER_AREA)
+    new_fn = cv2.resize(fn, (new_w, new_h), fx=0, fy=0)
+    pad_h = w - new_w
+    pad_v = h - new_h
+    pad_l = round(pad_h / 2)
+    pad_r = pad_h - pad_l
+    pad_t = round(pad_v / 2)
+    pad_b = pad_v - pad_t
+    new_fn = cv2.copyMakeBorder(
+        new_fn, pad_t, pad_b, pad_l, pad_r, cv2.BORDER_CONSTANT, value=0)
+    return new_fn
+
+
+def list_files(sourcePath, pattern='*.*'):
+    #pattern = 'bike*.png'
+    pathlist = Path(sourcePath).glob('**/'+pattern)
+    directories = []
+    for path in pathlist:
+        path_in_str = str(path)  # because path is object not string
+        #label = int(os.path.basename(path)[0:3])
+        # myfile.write(path_in_str)
+        directories.append(path_in_str)
+    return (directories)
