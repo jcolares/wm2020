@@ -9,13 +9,11 @@ import json
 import os.path as osp
 from labelme import utils
 import zlib
-
-
-# =========================================================
-#   convert Supervise.ly JSON annotations to image files
-# =========================================================
+import random
 
 # this function from: https://docs.supervise.ly/data-organization/import-export/supervisely-format
+
+
 def base64_2_mask(s):
     z = zlib.decompress(base64.b64decode(s))
     n = np.fromstring(z, np.uint8)
@@ -31,7 +29,6 @@ def json_2_bitmap(source_file, dest_file=''):
     image_h = ann['size']['height']
     image_w = ann['size']['width']
     mask_img = np.zeros([image_h, image_w])
-
     # Generate image mask
     if ann['objects'][0]['geometryType'] == 'bitmap':
         origin = ann['objects'][0]['bitmap']['origin']
@@ -58,12 +55,14 @@ def json_2_bitmap(source_file, dest_file=''):
 
 
 def resize_320x240(fn, w=320, h=240, interpolate=0):
-    ratio = max(fn.shape)/w
+    ratio = max(fn.shape[0]/h, fn.shape[1]/w)
     new_h = round(fn.shape[0]/ratio)
     new_w = round(fn.shape[1]/ratio)
-    # new_fn = cv2.resize(fn, (new_w, new_h), fx=0, fy=0,
-    #                    interpolation=cv2.INTER_AREA)
-    new_fn = cv2.resize(fn, (new_w, new_h), fx=0, fy=0)
+    if interpolate == 1:
+        new_fn = cv2.resize(fn, (new_w, new_h), fx=0, fy=0,
+                            interpolation=cv2.INTER_AREA)
+    else:
+        new_fn = cv2.resize(fn, (new_w, new_h), fx=0, fy=0)
     pad_h = w - new_w
     pad_v = h - new_h
     pad_l = round(pad_h / 2)
@@ -76,12 +75,40 @@ def resize_320x240(fn, w=320, h=240, interpolate=0):
 
 
 def list_files(sourcePath, pattern='*.*'):
-    #pattern = 'bike*.png'
     pathlist = Path(sourcePath).glob('**/'+pattern)
-    directories = []
+    file_list = []
     for path in pathlist:
         path_in_str = str(path)  # because path is object not string
-        #label = int(os.path.basename(path)[0:3])
-        # myfile.write(path_in_str)
-        directories.append(path_in_str)
-    return (directories)
+        file_list.append(path_in_str)
+    return (file_list)
+
+
+def preprocess_file(img_file, work_dir):
+    if os.path.splitext(os.path.basename(img_file))[1] == '.json':
+        img = json_2_bitmap(img_file)
+        img = resize_320x240(img)
+        dest_file = work_dir + '/train_mask/' + \
+            os.path.splitext(os.path.basename(img_file))[0]
+    else:
+        img = cv2.imread(img_file, 1)
+        img = resize_320x240(img)
+        dest_file = work_dir + '/train_img/' + \
+            os.path.basename(img_file)
+    cv2.imwrite(dest_file, img)
+    return
+
+
+def split_dataset(file_list):
+    # from https://cs230.stanford.edu/blog/split/#theory-how-to-choose-the-train-train-dev-dev-and-test-sets
+    file_list.sort()  # make sure that the file_list have a fixed order before shuffling
+    random.seed(230)
+    # shuffles the ordering of file_list (deterministic given the chosen seed)
+    random.shuffle(file_list)
+    split_1 = int(0.8 * len(file_list))
+    split_2 = int(0.9 * len(file_list))
+    train_file_list = file_list[:split_1]
+    #dev_file_list = file_list[split_1:split_2]
+    #test_file_list = file_list[split_2:]
+    # return(train_file_list, dev_file_list, test_file_list)
+    test_file_list = file_list[split_1:]
+    return(train_file_list, test_file_list)
