@@ -54,7 +54,7 @@ def json_2_bitmap(source_file, dest_file=''):
         return(mask_img)
 
 
-def resize_320x240(fn, w=320, h=240, interpolate=0):
+def resize(fn, w=512, h=512, interpolate=0):
     ratio = max(fn.shape[0]/h, fn.shape[1]/w)
     new_h = round(fn.shape[0]/ratio)
     new_w = round(fn.shape[1]/ratio)
@@ -62,7 +62,8 @@ def resize_320x240(fn, w=320, h=240, interpolate=0):
         new_fn = cv2.resize(fn, (new_w, new_h), fx=0, fy=0,
                             interpolation=cv2.INTER_AREA)
     else:
-        new_fn = cv2.resize(fn, (new_w, new_h), fx=0, fy=0)
+        new_fn = cv2.resize(fn, (new_w, new_h), fx=0, fy=0,
+                            interpolation=cv2.INTER_NEAREST)
     pad_h = w - new_w
     pad_v = h - new_h
     pad_l = round(pad_h / 2)
@@ -86,18 +87,19 @@ def list_files(sourcePath, pattern='*.*'):
 def preprocess_file(img_file, work_dir):
     if os.path.splitext(os.path.basename(img_file))[1] == '.json':
         img = json_2_bitmap(img_file)
-        img = resize_320x240(img)
+        img = resize(img)
         dest_file = work_dir + '/train_mask/' + \
             os.path.splitext(os.path.basename(img_file))[0]
     else:
         img = cv2.imread(img_file, 1)
-        img = resize_320x240(img)
+        img = resize(img)
         dest_file = work_dir + '/train_img/' + \
             os.path.basename(img_file)
     cv2.imwrite(dest_file, img)
     return
 
 
+'''
 def split_dataset(file_list):
     # from https://cs230.stanford.edu/blog/split/#theory-how-to-choose-the-train-train-dev-dev-and-test-sets
     file_list.sort()  # make sure that the file_list have a fixed order before shuffling
@@ -112,3 +114,4 @@ def split_dataset(file_list):
     # return(train_file_list, dev_file_list, test_file_list)
     test_file_list = file_list[split_1:]
     return(train_file_list, test_file_list)
+'''
