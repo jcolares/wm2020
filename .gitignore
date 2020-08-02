@@ -1,4 +1,4 @@
-model_office.pth
+*.pth
 vscode-remote/servers.txt
 segmentation/args.yaml
 *.pyc
