@@ -13,7 +13,7 @@ from PIL import Image
 from utils import getArgs
 
 # load variables from file
-args = getArgs('args.yaml')
+args = getArgs('segmentation/args.yaml')
 img_dir = args['img_dir']
 mask_dir = args['mask_dir']
 mean = args['mean']
@@ -47,8 +47,10 @@ for itr, batch in enumerate(dataloader):
     image = torch.sigmoid(model(image.to(device)))
     image = image.detach().cpu().numpy()
     image = np.squeeze(image)
+    image = image.round()
+    image = image * 255
+    a = Image.fromarray(image)
     mask = np.squeeze(mask)
-    a = transforms.ToPILImage()(image)
     b = transforms.ToPILImage()(mask)
     c = transforms.ToPILImage(mode='RGB')(orig_img)
     f = plt.figure()
