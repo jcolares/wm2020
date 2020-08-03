@@ -17,7 +17,7 @@ df = list_files(img_dir)
 
 
 # Treinamento
-model = smp.Unet("resnet18", encoder_weights="imagenet",
+model = smp.Unet("resnet101", encoder_weights="imagenet",
                  classes=1, activation=None)
 model_trainer = Trainer(model, df, img_dir, mask_dir, mean, std)
 model_trainer.start()
