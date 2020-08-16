@@ -1,8 +1,8 @@
 # Parameters
-#img_dir : /home/jeff/datasets/SPD/train_img
-#mask_dir : /home/jeff/datasets/SPD/train_mask
-img_dir : /projects/jeff/person/train_img
-mask_dir : /projects/jeff/person/train_mask
+img_dir : /home/jeff/datasets/SPD/train_img
+mask_dir : /home/jeff/datasets/SPD/train_mask
+#img_dir : /projects/jeff/person/train_img
+#mask_dir : /projects/jeff/person/train_mask
 # imagenet
 mean: !!python/tuple [0.485, 0.456, 0.406]
 std : !!python/tuple [0.229, 0.224, 0.225]
