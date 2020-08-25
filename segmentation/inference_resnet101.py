@@ -23,14 +23,12 @@ df = list_files(img_dir)
 dataloader = PersonDataloader(df, img_dir, mask_dir, mean, std, 'val', 1, 4)
 
 device = torch.device("cuda")
-# model = smp.Unet("resnet18", encoder_weights="imagenet",
-#                 classes=1, activation=None)
-model = torch.hub.load(
-    'pytorch/vision', 'deeplabv3_resnet101', pretrained=True)
+model = smp.Unet("resnet101", encoder_weights="imagenet",
+                 classes=1, activation=None)
 model.to(device)
 model.eval()
-#state = torch.load(ckpt_path, map_location=lambda storage, loc: storage)
-# model.load_state_dict(state["state_dict"])
+state = torch.load(ckpt_path, map_location=lambda storage, loc: storage)
+model.load_state_dict(state["state_dict"])
 
 inv_normalize = transforms.Normalize(
     mean=[-0.485/0.229, -0.456/0.224, -0.406/0.225],
@@ -46,12 +44,11 @@ for itr, batch in enumerate(dataloader):
     image, mask = batch
     orig_img = np.squeeze(image)
     orig_img = inv_normalize(orig_img)
-    #image = torch.sigmoid(model(image.to(device)))
-    image = model(image.to(device))
-    #image = image.detach().cpu().numpy()
+    image = torch.sigmoid(model(image.to(device)))
+    image = image.detach().cpu().numpy()
     image = np.squeeze(image)
-    #image = image.round()
-    #image = image * 255
+    image = image.round()
+    image = image * 255
     a = Image.fromarray(image)
     mask = np.squeeze(mask)
     b = transforms.ToPILImage()(mask)

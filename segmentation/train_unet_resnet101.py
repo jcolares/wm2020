@@ -5,7 +5,7 @@ import segmentation_models_pytorch as smp
 from utils import getArgs
 
 # load variables from file
-args = getArgs('args.yaml')
+args = getArgs('segmentation/args.yaml')
 img_dir = args['img_dir']
 mask_dir = args['mask_dir']
 mean = args['mean']

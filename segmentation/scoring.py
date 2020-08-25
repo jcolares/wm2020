@@ -31,5 +31,5 @@ def epoch_log(epoch_loss, measure):
     # logging the metrics at the end of an epoch
     dices = measure.get_metrics()
     dice = dices
-    print("Loss: %0.4f |dice: %0.4f" % (epoch_loss, dice))
+    print("Loss: |%0.4f |dice: |%0.4f|" % (epoch_loss, dice))
     return dice

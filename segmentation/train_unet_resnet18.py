@@ -5,7 +5,7 @@ import segmentation_models_pytorch as smp
 from utils import getArgs
 
 # load variables from file
-args = getArgs('args.yaml')
+args = getArgs('segmentation/args.yaml')
 img_dir = args['img_dir']
 mask_dir = args['mask_dir']
 mean = args['mean']
@@ -17,7 +17,7 @@ df = list_files(img_dir)
 
 
 # Treinamento
-model = smp.Unet("resnet18", encoder_weights="imagenet",
+model = smp.Unet("resnet18",  encoder_weights="imagenet",
                  classes=1, activation=None)
 model_trainer = Trainer(model, df, img_dir, mask_dir, mean, std)
 model_trainer.start()

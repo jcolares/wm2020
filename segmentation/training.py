@@ -21,10 +21,10 @@ class Trainer(object):
         self.mask_dir = mask_dir
         self.mean = mean
         self.std = std
-        self.num_workers = 4
+        self.num_workers = 8
         self.batch_size = {'train': 1, 'val': 1}
         self.accumulation_steps = 4//self.batch_size['train']
-        self.lr = 5e-4
+        self.lr = 5e-3
         self.num_epochs = 100
         self.phases = ['train', 'val']
         self.best_loss = float('inf')
@@ -35,7 +35,7 @@ class Trainer(object):
         self.criterion = torch.nn.BCEWithLogitsLoss()
         self.optimizer = optim.Adam(self.net.parameters(), lr=self.lr)
         self.scheduler = ReduceLROnPlateau(
-            self.optimizer, mode='min', patience=3, verbose=True)
+            self.optimizer, mode='min', patience=6, verbose=True)
         self.dataloaders = {phase: PersonDataloader(df, img_dir,
                                                     mask_dir, mean, std,
                                                     phase=phase, batch_size=self.batch_size[phase],
@@ -54,7 +54,7 @@ class Trainer(object):
     def iterate(self, epoch, phase):
         measure = Scores(phase, epoch)
         start = time.strftime("%H:%M:%S")
-        print(f"Starting epoch: {epoch} | phase:{phase} | 🙊':{start}")
+        print(f"Starting epoch: | {epoch} | phase: {phase} |start:| {start}|")
         batch_size = self.batch_size[phase]
         self.net.train(phase == "train")
         dataloader = self.dataloaders[phase]
